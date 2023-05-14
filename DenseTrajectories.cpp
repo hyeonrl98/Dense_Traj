@@ -3,6 +3,7 @@
 #include "Descriptors.h"
 #include "OpticalFlow.h"
 
+#include <windows.h>
 #include <time.h>
 
 using namespace cv;
@@ -18,11 +19,6 @@ void main() {
 	InitDescInfo(&hogInfo, 8, false, patch_size, nxy_cell, nt_cell);
 	InitDescInfo(&hofInfo, 9, true, patch_size, nxy_cell, nt_cell);
 	InitDescInfo(&mbhInfo, 8, false, patch_size, nxy_cell, nt_cell);
-
-	SeqInfo seqInfo;
-	InitSeqInfo(&seqInfo, video);
-
-    seqInfo.length = 2;
 
     if(show_track == 1)
 		namedWindow("DenseTrack", 0);
@@ -47,14 +43,14 @@ void main() {
     image1 = imread("image1.jpg");
     if (image1.empty()) {
         fprintf(stderr, "Could not read image file image1.jpg");
-        return -1;
+        return ;
     }
 
     // build pyramid for image 2
     image2 = imread("image2.jpg");
     if (image2.empty()) {
         fprintf(stderr, "Could not read image file image2.jpg");
-        return -1;
+        return ;
     }
 
     image.create(image1.size(), CV_8UC3);
@@ -73,7 +69,7 @@ void main() {
     xyScaleTracks.resize(scale_num);
 
     image1.copyTo(image);
-	cvtColor(image, prev_grey, CV_BGR2GRAY);
+	cv::cvtColor(image, prev_grey, cv::COLOR_BGR2GRAY);
 
     for(int iScale = 0; iScale < scale_num; iScale++) {
         if(iScale == 0)
@@ -96,7 +92,7 @@ void main() {
 
     init_counter++;
     image2.copyTo(image);
-    cvtColor(image, grey, CV_BGR2GRAY);
+    cv::cvtColor(image, grey, cv::COLOR_BGR2GRAY);
 
     // compute optical flow for all scales once
     my::FarnebackPolyExpPyr(grey, poly_pyr, fscales, 7, 1.5);
@@ -160,13 +156,8 @@ void main() {
             
                 float mean_x(0), mean_y(0), var_x(0), var_y(0), length(0);
                 if(IsValid(trajectory, mean_x, mean_y, var_x, var_y, length)) {
-                    printf("%d\t%f\t%f\t%f\t%f\t%f\t%f\t", frame_num, mean_x, mean_y, var_x, var_y, length, fscales[iScale]);
+                    printf("%f\t%f\t%f\t%f\t%f\t%f\t", mean_x, mean_y, var_x, var_y, length, fscales[iScale]);
 
-                    // for spatio-temporal pyramid
-                    printf("%f\t", std::min<float>(std::max<float>(mean_x/float(seqInfo.width), 0), 0.999));
-                    printf("%f\t", std::min<float>(std::max<float>(mean_y/float(seqInfo.height), 0), 0.999));
-                    printf("%f\t", std::min<float>(std::max<float>((frame_num - trackInfo.length/2.0 - start_frame)/float(seqInfo.length), 0), 0.999));
-                
                     // output the trajectory
                     for (int i = 0; i < trackInfo.length; ++i)
                         printf("%f\t%f\t", trajectory[i].x,trajectory[i].y);
@@ -204,8 +195,8 @@ void main() {
 
     if( show_track == 1 ) {
         imshow( "DenseTrack", image);
-        c = cvWaitKey(3);
-        if((char)c == 27) break;
+        c = cv::waitKey(5);
+        if((char)c == 27) ;
     }
 
 	if( show_track == 1 )

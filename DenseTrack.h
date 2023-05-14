@@ -1,11 +1,10 @@
 #ifndef DENSETRACK_H_
 #define DENSETRACK_H_
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <opencv/cxcore.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <ctype.h>
-#include <unistd.h>
 #include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +14,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <windows.h>
 
 using namespace cv;
 

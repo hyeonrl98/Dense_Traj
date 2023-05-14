@@ -90,48 +90,54 @@ bool arg_parse(int argc, char** argv)
 {
 	int c;
 	bool flag = false;
-	char* executable = basename(argv[0]);
-	while((c = getopt (argc, argv, "hS:E:L:W:N:s:t:A:I:")) != -1)
-	switch(c) {
+	char drive[_MAX_DRIVE];
+	char dir[_MAX_DIR];
+	char fname[_MAX_FNAME];
+	char ext[_MAX_EXT];
+	_splitpath_s(argv[0], drive, _MAX_DRIVE, dir, _MAX_DIR, fname, _MAX_FNAME, ext, _MAX_EXT);
+	char* executable = fname;
+
+	while ((c = getopt_long(argc, argv, "hS:E:L:W:N:s:t:A:I:", NULL, NULL)) != -1)
+		switch (c) {
 		case 'S':
-		start_frame = atoi(optarg);
-		flag = true;
-		break;
+			start_frame = atoi(optarg);
+			flag = true;
+			break;
 		case 'E':
-		end_frame = atoi(optarg);
-		flag = true;
-		break;
+			end_frame = atoi(optarg);
+			flag = true;
+			break;
 		case 'L':
-		track_length = atoi(optarg);
-		break;
+			track_length = atoi(optarg);
+			break;
 		case 'W':
-		min_distance = atoi(optarg);
-		break;
+			min_distance = atoi(optarg);
+			break;
 		case 'N':
-		patch_size = atoi(optarg);
-		break;
+			patch_size = atoi(optarg);
+			break;
 		case 's':
-		nxy_cell = atoi(optarg);
-		break;
+			nxy_cell = atoi(optarg);
+			break;
 		case 't':
-		nt_cell = atoi(optarg);
-		break;
+			nt_cell = atoi(optarg);
+			break;
 		case 'A':
-		scale_num = atoi(optarg);
-		break;
+			scale_num = atoi(optarg);
+			break;
 		case 'I':
-		init_gap = atoi(optarg);
-		break;	
+			init_gap = atoi(optarg);
+			break;
 
 		case 'h':
-		usage();
-		exit(0);
-		break;
+			usage();
+			exit(0);
+			break;
 
 		default:
-		fprintf(stderr, "error parsing arguments at -%c\n  Try '%s -h' for help.", c, executable );
-		abort();
-	}
+			fprintf(stderr, "error parsing arguments at -%c\n  Try '%s -h' for help.", c, executable);
+			abort();
+		}
 	return flag;
 }
 
